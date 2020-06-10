@@ -4,6 +4,7 @@ import com.example.library.api.dto.BookDTO;
 import com.example.library.api.model.entity.Book;
 import com.example.library.api.resource.exception.ApiErros;
 import com.example.library.api.service.BookService;
+import com.example.library.exception.BusinessException;
 import javax.validation.Valid;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,4 +46,11 @@ public class BookController {
 
         return new ApiErros(bindingResult);
     }
+
+    @ExceptionHandler(BusinessException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErros handleBusinessException(BusinessException exception) {
+        return new ApiErros(exception);
+    }
+
 }

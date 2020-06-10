@@ -1,5 +1,6 @@
 package com.example.library.api.resource;
 
+import com.example.library.exception.BusinessException;
 import com.example.library.api.dto.BookDTO;
 import com.example.library.api.model.entity.Book;
 import com.example.library.api.service.BookService;
@@ -40,11 +41,7 @@ public class BookControllerTest {
     @DisplayName("Deve criar um livro com sucesso.")
     public void createBookTest() throws Exception {
 
-        BookDTO dto = BookDTO.builder()
-                .author("Arthur")
-                .title("As aventuras")
-                .isbn("001")
-                .build();
+        BookDTO dto = createNewBook();
 
         Book savedBook = Book.builder()
                 .id(10L)
@@ -85,7 +82,39 @@ public class BookControllerTest {
 
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("erros", Matchers.hasSize(3)));
+                .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(3)));
 
+    }
+
+    @Test
+    @DisplayName("Deve lançar erro ao tentar cadastrar um livro com isbn já utilizado por outro.")
+    public void createBookWithDuplicatedIsbn() throws Exception {
+
+        BookDTO dto = createNewBook();
+
+        String json = new ObjectMapper().writeValueAsString(dto);
+
+        String mensagemErro = "Isbn já cadastrado.";
+
+        BDDMockito.given(service.save(Mockito.any(Book.class))).willThrow(new BusinessException(mensagemErro));
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .post(BOOK_API)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(json);
+
+        mvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isBadRequest())
+                .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value(mensagemErro));
+    }
+
+    private BookDTO createNewBook() {
+        return BookDTO.builder()
+                .author("Arthur")
+                .title("As aventuras")
+                .isbn("001")
+                .build();
     }
 }
