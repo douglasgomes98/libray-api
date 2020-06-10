@@ -39,7 +39,7 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("Deve criar um livro com sucesso.")
-    public void createBookTest() throws Exception {
+    public void createBook() throws Exception {
 
         BookDTO dto = createNewBook();
 
@@ -70,7 +70,7 @@ public class BookControllerTest {
 
     @Test
     @DisplayName("Deve lançar erro de validação para quando não houver dados suficiente para a criação do livro.")
-    public void createInvalidBookTest() throws Exception {
+    public void createInvalidBook() throws Exception {
 
         String json = new ObjectMapper().writeValueAsString(new BookDTO());
 
