@@ -27,7 +27,11 @@ public class BookRepositoryTest {
     public void returnTrueWhenIsbnExists() {
 
         String isbn = "123";
-        Book book = createNewBook();
+        Book book = Book.builder()
+                .author("Fulano")
+                .title("As aventuras")
+                .isbn("123")
+                .build();
 
         entityManager.persist(book);
 
@@ -41,19 +45,10 @@ public class BookRepositoryTest {
     public void returnFalseWhenIsbnExists() {
 
         String isbn = "123";
-        Book book = createNewBook();
 
         boolean exists = repository.existsByIsbn(isbn);
 
         Assertions.assertThat(exists).isFalse();
-    }
-
-    private Book createNewBook() {
-        return Book.builder()
-                .author("Fulano")
-                .title("As aventuras")
-                .isbn("123")
-                .build();
     }
 
 }

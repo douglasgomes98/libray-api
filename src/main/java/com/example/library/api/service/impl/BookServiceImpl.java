@@ -4,6 +4,7 @@ import com.example.library.api.model.entity.Book;
 import com.example.library.api.repository.BookRepository;
 import com.example.library.api.service.BookService;
 import com.example.library.exception.BusinessException;
+import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -22,6 +23,11 @@ public class BookServiceImpl implements BookService {
         }
 
         return repository.save(book);
+    }
+
+    @Override
+    public Optional<Book> getById(Long id) {
+        return Optional.empty();
     }
 
 }
