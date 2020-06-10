@@ -30,4 +30,9 @@ public class BookServiceImpl implements BookService {
         return Optional.empty();
     }
 
+    @Override
+    public void delete(Book book) {
+
+    }
+
 }
