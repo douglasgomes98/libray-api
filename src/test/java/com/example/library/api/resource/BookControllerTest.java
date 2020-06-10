@@ -1,7 +1,7 @@
 package com.example.library.api.resource;
 
 import com.example.library.exception.BusinessException;
-import com.example.library.api.dto.BookDTO;
+import com.example.library.api.model.dto.BookDTO;
 import com.example.library.api.model.entity.Book;
 import com.example.library.api.service.BookService;
 import com.fasterxml.jackson.databind.ObjectMapper;

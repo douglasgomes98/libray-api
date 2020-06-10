@@ -1,4 +1,4 @@
-package com.example.library.api.dto;
+package com.example.library.api.model.dto;
 
 import javax.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
