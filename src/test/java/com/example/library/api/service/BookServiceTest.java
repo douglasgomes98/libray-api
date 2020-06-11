@@ -89,6 +89,22 @@ public class BookServiceTest {
 
     }
 
+    @Test
+    @DisplayName("Deve retornar nulo ao obter um livro não existente.")
+    public void getNotFoundBookById() {
+
+        Long id = 1L;
+
+        Book book = createNewBook();
+        book.setId(id);
+
+        Mockito.when(repository.findById(id)).thenReturn(Optional.empty());
+
+        Optional<Book> foundBook = service.getById(id);
+
+        Assertions.assertThat(foundBook.isPresent()).isFalse();
+    }
+
     private Book createNewBook() {
         return Book.builder()
                 .author("Fulano")
