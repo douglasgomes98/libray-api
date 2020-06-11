@@ -105,6 +105,17 @@ public class BookServiceTest {
         Assertions.assertThat(foundBook.isPresent()).isFalse();
     }
 
+    @Test
+    @DisplayName("Deve deletar um livro.")
+    public void deleteBook() {
+
+        Book book = Book.builder().id(1L).build();
+
+        service.delete(book);
+
+        Mockito.verify(repository, Mockito.times(1)).delete(book);
+    }
+
     private Book createNewBook() {
         return Book.builder()
                 .author("Fulano")
