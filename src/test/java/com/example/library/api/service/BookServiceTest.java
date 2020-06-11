@@ -4,6 +4,7 @@ import com.example.library.api.model.entity.Book;
 import com.example.library.api.repository.BookRepository;
 import com.example.library.api.service.impl.BookServiceImpl;
 import com.example.library.exception.BusinessException;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -64,6 +65,27 @@ public class BookServiceTest {
         Assertions.assertThat(exception).hasMessage("Isbn já cadastrado.");
 
         Mockito.verify(repository, Mockito.never()).save(book);
+
+    }
+
+    @Test
+    @DisplayName("Deve obter um livro por Id.")
+    public void getBookById() {
+
+        Long id = 1L;
+
+        Book book = createNewBook();
+        book.setId(id);
+
+        Mockito.when(repository.findById(id)).thenReturn(Optional.of(book));
+
+        Optional<Book> foundBook = service.getById(id);
+
+        Assertions.assertThat(foundBook.isPresent());
+        Assertions.assertThat(foundBook.get().getId()).isEqualTo(id);
+        Assertions.assertThat(foundBook.get().getAuthor()).isEqualTo(book.getAuthor());
+        Assertions.assertThat(foundBook.get().getTitle()).isEqualTo(book.getTitle());
+        Assertions.assertThat(foundBook.get().getIsbn()).isEqualTo(book.getIsbn());
 
     }
 
