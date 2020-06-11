@@ -111,9 +111,20 @@ public class BookServiceTest {
 
         Book book = Book.builder().id(1L).build();
 
-        service.delete(book);
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> service.delete(book));
 
         Mockito.verify(repository, Mockito.times(1)).delete(book);
+    }
+
+    @Test
+    @DisplayName("Deve ocorrer erro ao deletar um livro.")
+    public void deleteInvalidBook() {
+
+        Book book = new Book();
+
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> service.delete(book));
+
+        Mockito.verify(repository, Mockito.never()).delete(book);
     }
 
     private Book createNewBook() {
