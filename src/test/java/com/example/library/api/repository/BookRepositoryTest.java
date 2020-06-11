@@ -1,6 +1,7 @@
 package com.example.library.api.repository;
 
 import com.example.library.api.model.entity.Book;
+import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,16 +27,11 @@ public class BookRepositoryTest {
     @DisplayName("Deve retonar verdadeiro quando existir um livro na base com o isbn informado.")
     public void returnTrueWhenIsbnExists() {
 
-        String isbn = "123";
-        Book book = Book.builder()
-                .author("Fulano")
-                .title("As aventuras")
-                .isbn("123")
-                .build();
+        Book book = createNewBook();
 
         entityManager.persist(book);
 
-        boolean exists = repository.existsByIsbn(isbn);
+        boolean exists = repository.existsByIsbn(book.getIsbn());
 
         Assertions.assertThat(exists).isTrue();
     }
@@ -49,6 +45,27 @@ public class BookRepositoryTest {
         boolean exists = repository.existsByIsbn(isbn);
 
         Assertions.assertThat(exists).isFalse();
+    }
+
+    @Test
+    @DisplayName("Deve obter um livro por Id.")
+    public void findById() {
+
+        Book book = createNewBook();
+
+        entityManager.persist(book);
+
+        Optional<Book> foundBook = repository.findById(book.getId());
+
+        Assertions.assertThat(foundBook.isPresent()).isTrue();
+    }
+
+    private static Book createNewBook() {
+        return Book.builder()
+                .author("Fulano")
+                .title("As aventuras")
+                .isbn("123")
+                .build();
     }
 
 }
