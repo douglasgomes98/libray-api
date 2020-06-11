@@ -127,6 +127,17 @@ public class BookServiceTest {
         Mockito.verify(repository, Mockito.never()).delete(book);
     }
 
+    @Test
+    @DisplayName("Deve ocorrer erro ao atualizar um livro.")
+    public void updateInvalidBook() {
+
+        Book book = new Book();
+
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> service.update(book));
+
+        Mockito.verify(repository, Mockito.never()).save(book);
+    }
+
     private Book createNewBook() {
         return Book.builder()
                 .author("Fulano")
