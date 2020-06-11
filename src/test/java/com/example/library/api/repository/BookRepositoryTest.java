@@ -60,6 +60,17 @@ public class BookRepositoryTest {
         Assertions.assertThat(foundBook.isPresent()).isTrue();
     }
 
+    @Test
+    @DisplayName("Deve salvar um livro.")
+    public void saveBook() {
+
+        Book book = createNewBook();
+
+        Book savedBook = repository.save(book);
+
+        Assertions.assertThat(savedBook.getId()).isNotNull();
+    }
+
     private static Book createNewBook() {
         return Book.builder()
                 .author("Fulano")
