@@ -128,6 +128,27 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Deve atualizar um livro")
+    public void updateBook() {
+
+        Long id = 1L;
+
+        Book updatingBook = Book.builder().id(id).build();
+
+        Book updatedBook = createNewBook();
+        updatedBook.setId(id);
+
+        Mockito.when(repository.save(updatingBook)).thenReturn(updatedBook);
+
+        Book book = service.update(updatingBook);
+
+        Assertions.assertThat(book.getId()).isEqualTo(updatedBook.getId());
+        Assertions.assertThat(book.getAuthor()).isEqualTo(updatedBook.getAuthor());
+        Assertions.assertThat(book.getTitle()).isEqualTo(updatedBook.getTitle());
+        Assertions.assertThat(book.getIsbn()).isEqualTo(updatedBook.getIsbn());
+    }
+
+    @Test
     @DisplayName("Deve ocorrer erro ao atualizar um livro.")
     public void updateInvalidBook() {
 
