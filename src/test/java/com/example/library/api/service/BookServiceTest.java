@@ -2,8 +2,8 @@ package com.example.library.api.service;
 
 import com.example.library.api.model.entity.Book;
 import com.example.library.api.repository.BookRepository;
+import com.example.library.api.service.exception.IsbnDuplicatedException;
 import com.example.library.api.service.impl.BookServiceImpl;
-import com.example.library.exception.BusinessException;
 import java.util.Optional;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,7 +61,7 @@ public class BookServiceTest {
         Mockito.when(repository.existsByIsbn(Mockito.anyString())).thenReturn(true);
 
         Throwable exception = Assertions.catchThrowable(() -> service.save(book));
-        Assertions.assertThat(exception).isInstanceOf(BusinessException.class);
+        Assertions.assertThat(exception).isInstanceOf(IsbnDuplicatedException.class);
         Assertions.assertThat(exception).hasMessage("Isbn já cadastrado.");
 
         Mockito.verify(repository, Mockito.never()).save(book);

@@ -1,6 +1,7 @@
 package com.example.library.api.model.entity;
 
 import java.io.Serializable;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -22,5 +23,7 @@ public class Book implements Serializable {
     private Long id;
     private String title;
     private String author;
+
+    @Column(unique = true)
     private String isbn;
 }

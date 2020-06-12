@@ -14,12 +14,12 @@ public class BookDTO {
 
     private Long id;
 
-    @NotEmpty
+    @NotEmpty(message = "É necessário informar um título.")
     private String title;
 
-    @NotEmpty
+    @NotEmpty(message = "É necessário informar um autor.")
     private String author;
 
-    @NotEmpty
+    @NotEmpty(message = "É necessário informar um isbn.")
     private String isbn;
 }

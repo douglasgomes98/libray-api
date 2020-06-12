@@ -1,9 +1,9 @@
 package com.example.library.api.resource;
 
-import com.example.library.exception.BusinessException;
 import com.example.library.api.model.dto.BookDTO;
 import com.example.library.api.model.entity.Book;
 import com.example.library.api.service.BookService;
+import com.example.library.api.service.exception.IsbnDuplicatedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.Optional;
 import org.hamcrest.Matchers;
@@ -97,7 +97,7 @@ public class BookControllerTest {
 
         String mensagemErro = "Isbn já cadastrado.";
 
-        BDDMockito.given(service.save(Mockito.any(Book.class))).willThrow(new BusinessException(mensagemErro));
+        BDDMockito.given(service.save(Mockito.any(Book.class))).willThrow(new IsbnDuplicatedException(mensagemErro));
 
         MockHttpServletRequestBuilder request = MockMvcRequestBuilders
                 .post(BOOK_API)
@@ -107,8 +107,7 @@ public class BookControllerTest {
 
         mvc.perform(request)
                 .andExpect(MockMvcResultMatchers.status().isBadRequest())
-                .andExpect(MockMvcResultMatchers.jsonPath("errors", Matchers.hasSize(1)))
-                .andExpect(MockMvcResultMatchers.jsonPath("errors[0]").value(mensagemErro));
+                .andExpect(MockMvcResultMatchers.jsonPath("error").value(mensagemErro));
     }
 
     @Test
@@ -139,7 +138,7 @@ public class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Deve retornar resources not found quando um livro não existir.")
+    @DisplayName("Deve retornar resource not found quando um livro não existir.")
     public void bookNotFound() throws Exception {
 
         BDDMockito.given(service.getById(Mockito.anyLong())).willReturn(Optional.empty());
@@ -168,7 +167,7 @@ public class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Deve retornar resource not founrd quando não encontrar um livro para deletar.")
+    @DisplayName("Deve retornar resource not found quando não encontrar um livro para deletar.")
     public void deleteNonExistentBook() throws Exception {
 
         BDDMockito.given(service.getById(Mockito.anyLong()))
