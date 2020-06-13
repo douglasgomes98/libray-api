@@ -251,7 +251,7 @@ public class BookControllerTest {
     }
 
     @Test
-    @DisplayName("Deve listar livros utilizando filtros")
+    @DisplayName("Deve listar livros utilizando filtros.")
     public void findBooks() throws Exception {
 
         Long id = 1L;
