@@ -5,6 +5,7 @@ import com.example.library.api.model.entity.Book;
 import com.example.library.api.service.BookService;
 import com.example.library.api.service.exception.IsbnDuplicatedException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.util.Arrays;
 import java.util.Optional;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.DisplayName;
@@ -16,6 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -42,7 +46,7 @@ public class BookControllerTest {
     @DisplayName("Deve criar um livro com sucesso.")
     public void createBook() throws Exception {
 
-        BookDTO dto = createNewBook();
+        BookDTO dto = createNewBookDTO();
 
         Book savedBook = Book.builder()
                 .id(10L)
@@ -91,7 +95,7 @@ public class BookControllerTest {
     @DisplayName("Deve lançar erro ao tentar cadastrar um livro com isbn já utilizado por outro.")
     public void createBookWithDuplicatedIsbn() throws Exception {
 
-        BookDTO dto = createNewBook();
+        BookDTO dto = createNewBookDTO();
 
         String json = new ObjectMapper().writeValueAsString(dto);
 
@@ -118,9 +122,9 @@ public class BookControllerTest {
 
         Book book = Book.builder()
                 .id(id)
-                .author(createNewBook().getAuthor())
-                .title(createNewBook().getTitle())
-                .isbn(createNewBook().getIsbn())
+                .author(createNewBookDTO().getAuthor())
+                .title(createNewBookDTO().getTitle())
+                .isbn(createNewBookDTO().getIsbn())
                 .build();
 
         BDDMockito.given(service.getById(id)).willReturn(Optional.of(book));
@@ -187,7 +191,7 @@ public class BookControllerTest {
 
         Long id = 1L;
 
-        BookDTO newBook = createNewBook();
+        BookDTO newBook = createNewBookDTO();
 
         String json = new ObjectMapper().writeValueAsString(newBook);
 
@@ -228,7 +232,7 @@ public class BookControllerTest {
 
         Long id = 1L;
 
-        BookDTO newBook = createNewBook();
+        BookDTO newBook = createNewBookDTO();
 
         String json = new ObjectMapper().writeValueAsString(newBook);
 
@@ -246,7 +250,38 @@ public class BookControllerTest {
 
     }
 
-    private BookDTO createNewBook() {
+    @Test
+    @DisplayName("Deve listar livros utilizando filtros")
+    public void findBooks() throws Exception {
+
+        Long id = 1L;
+
+        Book book = Book.builder()
+                .id(id)
+                .author("some author")
+                .title("some title")
+                .isbn("321")
+                .build();
+
+        BDDMockito.given(service.find(Mockito.any(Book.class), Mockito.any(Pageable.class)))
+                .willReturn(new PageImpl<Book>(Arrays.asList(book), PageRequest.of(0, 100), 1));
+
+        String queryString = String.format("?title=%s&author=%s&page=%s&size=%s", book.getTitle(), book.getAuthor(), 0, 100);
+
+        MockHttpServletRequestBuilder request = MockMvcRequestBuilders
+                .get(BOOK_API.concat(queryString))
+                .accept(MediaType.APPLICATION_JSON);
+
+        mvc.perform(request)
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("content", Matchers.hasSize(1)))
+                .andExpect(MockMvcResultMatchers.jsonPath("totalElements").value(1))
+                .andExpect(MockMvcResultMatchers.jsonPath("pageable.pageNumber").value(0))
+                .andExpect(MockMvcResultMatchers.jsonPath("pageable.pageSize").value(100));
+
+    }
+
+    private BookDTO createNewBookDTO() {
         return BookDTO.builder()
                 .author("Arthur")
                 .title("As aventuras")

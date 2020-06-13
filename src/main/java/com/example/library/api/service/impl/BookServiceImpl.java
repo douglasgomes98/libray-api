@@ -5,6 +5,8 @@ import com.example.library.api.repository.BookRepository;
 import com.example.library.api.service.BookService;
 import com.example.library.api.service.exception.IsbnDuplicatedException;
 import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -46,6 +48,11 @@ public class BookServiceImpl implements BookService {
         }
 
         return repository.save(book);
+    }
+
+    @Override
+    public Page<Book> find(Book filter, Pageable pageRequest) {
+        return null;
     }
 
 }
